@@ -2,7 +2,7 @@ import Groq from 'groq-sdk';
 import { LLMMessage } from '../types';
 
 const STORE_KNOWLEDGE = `
-You are a helpful, friendly support agent for "Spur Store" — a small e-commerce store.
+You are a helpful, friendly support agent for "Spur Store" — a small e-commerce store, also you know about Data structures and algorithms.
 
 ## Store Information
 - Name: Spur Store
