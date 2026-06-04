@@ -2,7 +2,7 @@
 
 A full-stack AI customer support chat widget built for the Spur founding engineer assignment.
 
-**Live demo:** _[deploy URL here]_
+**Live demo:** https://spur-chat-eight.vercel.app
 
 ---
 
@@ -12,14 +12,14 @@ A full-stack AI customer support chat widget built for the Spur founding enginee
 
 - Node.js 18+
 - PostgreSQL 14+ (running locally or via a hosted service)
-- An Anthropic API key ([get one here](https://console.anthropic.com))
+- A Groq API key (free at [console.groq.com](https://console.groq.com))
 
 ---
 
 ## 1. Clone & Install
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/spur-chat.git
+git clone https://github.com/SameerKumar2609/spur-chat.git
 cd spur-chat
 
 # Install backend dependencies
@@ -44,15 +44,15 @@ Edit `.env`:
 
 ```env
 # Required
-ANTHROPIC_API_KEY=sk-ant-...
+GROQ_API_KEY=gsk_...your key...
 
 # Database — pick one option:
 # Option A: connection string
-DATABASE_URL=postgresql://postgres:yourpassword@localhost:5432/spur_chat
+DATABASE_URL=postgresql://postgres:yourpassword@localhost:5433/spur_chat
 
 # Option B: individual fields (used if DATABASE_URL is not set)
 DB_HOST=localhost
-DB_PORT=5432
+DB_PORT=3001
 DB_NAME=spur_chat
 DB_USER=postgres
 DB_PASSWORD=yourpassword
@@ -72,7 +72,7 @@ cp .env.example .env
 Edit `.env`:
 
 ```env
-PUBLIC_API_URL=http://localhost:3001
+VITE_API_URL=http://localhost:3001
 ```
 
 ---
@@ -175,9 +175,9 @@ Controller (chat.controller.ts) ← Zod validation, HTTP concerns only
 Service (chat.service.ts)       ← Business logic, orchestration
     ↓
 Repository (conversation.repo)  ← DB queries, no business logic
-LLMService (llm.service.ts)     ← Anthropic API, prompt assembly
+LLMService (llm.service.ts)     ← Groq API, prompt assembly
     ↓
-PostgreSQL / Anthropic API
+PostgreSQL / Groq API
 ```
 
 Each layer has one job. Adding a WhatsApp channel means adding a new route + controller; the service and repository stay untouched.
@@ -240,15 +240,16 @@ messages (
 
 ---
 
+
 ## LLM Notes
 
-**Provider:** Anthropic Claude (`claude-sonnet-4-20250514`)
+**Provider:** Groq (`llama-3.3-70b-versatile`) — free tier, very fast inference
 
 **Prompting strategy:**
 
-1. **System prompt** — Contains the store's FAQ (shipping policy, returns, support hours, payment methods) as structured plain text. This is hardcoded for simplicity; in production it would be fetched from a `store_config` table per-merchant.
+1. **System prompt** — Contains the store's FAQ (shipping policy, returns, support hours, payment methods) as structured plain text. Hardcoded for simplicity; in production it would be fetched from a `store_config` table per-merchant.
 
-2. **Conversation history** — The last 10 messages are included in each API call for contextual replies. This is capped to control token cost.
+2. **Conversation history** — The last 10 messages are included in each API call for contextual replies. Capped to control token cost.
 
 3. **Max tokens** — Set to 512 per response. Support answers should be concise; this also limits cost.
 
@@ -259,7 +260,6 @@ messages (
 - Network timeout → "AI took too long to respond"
 
 All LLM errors return friendly user-facing messages; the raw error is logged server-side.
-
 ---
 
 ## Robustness
