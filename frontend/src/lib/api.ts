@@ -1,4 +1,4 @@
-import { PUBLIC_API_URL } from '$env/static/public';
+const BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 export interface Message {
   id: string;
@@ -18,8 +18,6 @@ export interface HistoryResponse {
   sessionId: string;
   messages: Message[];
 }
-
-const BASE = PUBLIC_API_URL || 'http://localhost:3001';
 
 export async function sendMessage(
   message: string,
